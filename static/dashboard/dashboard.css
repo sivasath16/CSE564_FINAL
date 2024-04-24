@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+h1 {
+    font-weight: 400;
+    font-size: 2rem;
+}
+h2{
+    font-weight: 400;
+    font-size: 1.4rem;
+}
+
+h3{
+    font-size: 1.3em;
+}
+
+p{
+    font-size: 1.3em;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.main {
+    min-height: 100vh;
+    width: 100%;
+    transition: all 0.35s ease-in-out;
+    background-color: #fafbfe;
+}
+
+
+.mains {
+    justify-content: center;
+    width: 40cm;
+    margin: auto;
+  }
+  
+.mains .num,
+.mains .cat,
+.mains .sat {
+    width: 12cm;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+  
+.mains .num {
+    float: left;
+    height: 12cm;
+    justify-content: space-evenly;
+}
+  
+.mains .cat {
+    float: right;
+    height: 12cm;
+    justify-content: space-evenly;
+}
+
+.mains .sat {
+    float: right;
+    height: 12cm;
+    justify-content: space-evenly;
+}
+  
+@media (min-width: 0px) {
+    .mains {
+        width: 98%;
+        display: flex;
+    }
+    
+    .mains .num,
+    .mains .cat,
+    .mains .sat {
+        width: 100%;
+        float: none;
+        margin: 5px;
+        
+    }
+}
+
+.mains .num, .mains .cat, .mains .sat{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
