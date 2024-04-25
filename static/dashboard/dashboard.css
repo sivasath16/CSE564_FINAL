@@ -76,9 +76,8 @@ body {
     .mains .cat,
     .mains .sat {
         width: 100%;
-        float: none;
         margin: 5px;
-        
+        float: none;
     }
 }
 

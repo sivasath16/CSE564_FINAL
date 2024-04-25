@@ -12,7 +12,7 @@ let staticColor = '#69b3a2';
 let hoverColor = '#eec42d';
 
 // Load the data
-d3.csv("/final_project/dataset/dataset.csv").then(function(data) {
+d3.csv("/static/dataset/dataset.csv").then(function(data) {
   const types = Array.from(new Set(data.map(d => d['types of cancer'])));
   const years = Array.from(new Set(data.map(d => +d.Year))).sort(d3.ascending);
 
