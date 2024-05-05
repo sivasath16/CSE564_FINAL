@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,45 +12,47 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
-    <script src="..\static\dashboard\bar.js"></script>
-    <script src="https://d3js.org/topojson.v3.min.js"></script>
 </head>
 
 <body>
     <div class="wrapper">
         <div class="main p-3">
             <div class="text-center">
-                <h1><b>Final</b></h1>
+                <h1><b>Cancer Dashboard</b></h1>
             </div>        
             <div class="mains">
                 <div class="num">
-                    <h2>PCP</h2>
-                    <div id="pcp">
-                    </div>
+                    <h3>PCP</h3>
+                    <div id="pcp"></div>
                 </div>
                 <div class="cat">
+                    <h3>Death Rate of Countries</h3>
                     <div id="geomap"></div>
                 </div>
             </div>
+            <div class="slide">
+                <label for="yearSlider">Year:</label>
+                <input type="range" id="yearSlider" min="1990" max="2019" step="1" value="1990" style="width: 30%;">
+                <span id="sliderValue">1990</span>
+            </div>
             <div class="mains">
                 <div class="num">
-                    <div id="bar">
-                    </div>
-                    <div id="slider">                
-                        <span id="sliderValue"></span>
-                    </div>
+                    <div id="bar"></div>
                 </div>
                 <div class="cat">
                     <h2>MDS Variableplot</h2>
                     <div id="MDS2"></div>
                 </div>
                 <div class="sat">
-                    <h2>MDS Variableplot</h2>
+                    <h2>Pie Chart</h2>
                     <div id="MDS2"></div>
                 </div>
             </div>
         </div>
     </div>
-    </body>
+    <script src="..\static\dashboard\geo.js"></script>
+    <script src="..\static\dashboard\bar.js"></script>
+    <script src="..\static\dashboard\parallel_plot.js"></script>
 
+</body>
 </html>
