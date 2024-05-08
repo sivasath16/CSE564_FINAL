@@ -21,13 +21,26 @@
                 <h1><b>Cancer Dashboard</b></h1>
             </div>        
             <div class="mains">
+                <div class="cat">
+                    <h3>Geo Map</h3>
+                    <div class="dropdown1">
+                        <div class="select1">
+                            <span class="selected1">
+                                Death Rates
+                            </span>
+                            <div class="caret1">
+                            </div>
+                        </div>
+                        <ul class="menu1">
+                            <li class = "active">Death Rates</li>
+                            <li>Neoplasm Rates</li>
+                        </ul>
+                    </div>
+                    <div id="geomap"></div>
+                </div>
                 <div class="num">
                     <h3>PCP</h3>
                     <div id="pcp"></div>
-                </div>
-                <div class="cat">
-                    <h3>Death Rate of Countries</h3>
-                    <div id="geomap"></div>
                 </div>
             </div>
             <div class="slide">
@@ -44,15 +57,236 @@
                     <div id="MDS2"></div>
                 </div>
                 <div class="sat">
-                    <h2>Pie Chart</h2>
-                    <div id="MDS2"></div>
+                    <div class="dropdown">
+                        <div class="select">
+                            <span class="selected">
+                                Afghanistan
+                            </span>
+                            <div class="caret">
+                            </div>
+                        </div>
+                        <ul class="menu">
+                            <li class = "active">Afghanistan</li>
+                            <li>Albania</li>
+                            <li>Algeria</li>
+                            <li>American Samoa</li>
+                            <li>Andorra</li>
+                            <li>Angola</li>
+                            <li>Antigua and Barbuda</li>
+                            <li>Argentina</li>
+                            <li>Armenia</li>
+                            <li>Australia</li>
+                            <li>Austria</li>
+                            <li>Azerbaijan</li>
+                            <li>Bahamas</li>
+                            <li>Bahrain</li>
+                            <li>Bangladesh</li>
+                            <li>Barbados</li>
+                            <li>Belarus</li>
+                            <li>Belgium</li>
+                            <li>Belize</li>
+                            <li>Benin</li>
+                            <li>Bermuda</li>
+                            <li>Bhutan</li>
+                            <li>Bolivia</li>
+                            <li>Bosnia and Herzegovina</li>
+                            <li>Botswana</li>
+                            <li>Brazil</li>
+                            <li>Brunei</li>
+                            <li>Bulgaria</li>
+                            <li>Burkina Faso</li>
+                            <li>Burundi</li>
+                            <li>Cambodia</li>
+                            <li>Cameroon</li>
+                            <li>Canada</li>
+                            <li>Cape Verde</li>
+                            <li>Central African Republic</li>
+                            <li>Chad</li>
+                            <li>Chile</li>
+                            <li>China</li>
+                            <li>Colombia</li>
+                            <li>Comoros</li>
+                            <li>Congo</li>
+                            <li>Cook Islands</li>
+                            <li>Costa Rica</li>
+                            <li>Cote d'Ivoire</li>
+                            <li>Croatia</li>
+                            <li>Cuba</li>
+                            <li>Cyprus</li>
+                            <li>Czechia</li>
+                            <li>Democratic Republic of Congo</li>
+                            <li>Denmark</li>
+                            <li>Djibouti</li>
+                            <li>Dominica</li>
+                            <li>Dominican Republic</li>
+                            <li>East Timor</li>
+                            <li>Ecuador</li>
+                            <li>Egypt</li>
+                            <li>El Salvador</li>
+                            <li>England</li>
+                            <li>Equatorial Guinea</li>
+                            <li>Eritrea</li>
+                            <li>Estonia</li>
+                            <li>Eswatini</li>
+                            <li>Ethiopia</li>
+                            <li>Fiji</li>
+                            <li>Finland</li>
+                            <li>France</li>
+                            <li>Gabon</li>
+                            <li>Gambia</li>
+                            <li>Georgia</li>
+                            <li>Germany</li>
+                            <li>Ghana</li>
+                            <li>Greece</li>
+                            <li>Greenland</li>
+                            <li>Grenada</li>
+                            <li>Guam</li>
+                            <li>Guatemala</li>
+                            <li>Guinea</li>
+                            <li>Guinea-Bissau</li>
+                            <li>Guyana</li>
+                            <li>Haiti</li>
+                            <li>Honduras</li>
+                            <li>Hungary</li>
+                            <li>Iceland</li>
+                            <li>India</li>
+                            <li>Indonesia</li>
+                            <li>Iran</li>
+                            <li>Iraq</li>
+                            <li>Ireland</li>
+                            <li>Israel</li>
+                            <li>Italy</li>
+                            <li>Jamaica</li>
+                            <li>Japan</li>
+                            <li>Jordan</li>
+                            <li>Kazakhstan</li>
+                            <li>Kenya</li>
+                            <li>Kiribati</li>
+                            <li>Kuwait</li>
+                            <li>Kyrgyzstan</li>
+                            <li>Laos</li>
+                            <li>Latvia</li>
+                            <li>Lebanon</li>
+                            <li>Lesotho</li>
+                            <li>Liberia</li>
+                            <li>Libya</li>
+                            <li>Lithuania</li>
+                            <li>Luxembourg</li>
+                            <li>Madagascar</li>
+                            <li>Malawi</li>
+                            <li>Malaysia</li>
+                            <li>Maldives</li>
+                            <li>Mali</li>
+                            <li>Malta</li>
+                            <li>Marshall Islands</li>
+                            <li>Mauritania</li>
+                            <li>Mauritius</li>
+                            <li>Mexico</li>
+                            <li>Micronesia (country)</li>
+                            <li>Moldova</li>
+                            <li>Monaco</li>
+                            <li>Mongolia</li>
+                            <li>Montenegro</li>
+                            <li>Morocco</li>
+                            <li>Mozambique</li>
+                            <li>Myanmar</li>
+                            <li>Namibia</li>
+                            <li>Nauru</li>
+                            <li>Nepal</li>
+                            <li>Netherlands</li>
+                            <li>New Zealand</li>
+                            <li>Nicaragua</li>
+                            <li>Niger</li>
+                            <li>Nigeria</li>
+                            <li>Niue</li>
+                            <li>North Korea</li>
+                            <li>North Macedonia</li>
+                            <li>Northern Ireland</li>
+                            <li>Northern Mariana Islands</li>
+                            <li>Norway</li>
+                            <li>Oman</li>
+                            <li>Pakistan</li>
+                            <li>Palau</li>
+                            <li>Palestine</li>
+                            <li>Panama</li>
+                            <li>Papua New Guinea</li>
+                            <li>Paraguay</li>
+                            <li>Peru</li>
+                            <li>Philippines</li>
+                            <li>Poland</li>
+                            <li>Portugal</li>
+                            <li>Puerto Rico</li>
+                            <li>Qatar</li>
+                            <li>Romania</li>
+                            <li>Russia</li>
+                            <li>Rwanda</li>
+                            <li>Saint Kitts and Nevis</li>
+                            <li>Saint Lucia</li>
+                            <li>Saint Vincent and the Grenadines</li>
+                            <li>Samoa</li>
+                            <li>San Marino</li>
+                            <li>Sao Tome and Principe</li>
+                            <li>Saudi Arabia</li>
+                            <li>Scotland</li>
+                            <li>Senegal</li>
+                            <li>Serbia</li>
+                            <li>Seychelles</li>
+                            <li>Sierra Leone</li>
+                            <li>Singapore</li>
+                            <li>Slovakia</li>
+                            <li>Slovenia</li>
+                            <li>Solomon Islands</li>
+                            <li>Somalia</li>
+                            <li>South Africa</li>
+                            <li>South Korea</li>
+                            <li>South Sudan</li>
+                            <li>Spain</li>
+                            <li>Sri Lanka</li>
+                            <li>Sudan</li>
+                            <li>Suriname</li>
+                            <li>Sweden</li>
+                            <li>Switzerland</li>
+                            <li>Syria</li>
+                            <li>Taiwan</li>
+                            <li>Tajikistan</li>
+                            <li>Tanzania</li>
+                            <li>Thailand</li>
+                            <li>Togo</li>
+                            <li>Tokelau</li>
+                            <li>Tonga</li>
+                            <li>Trinidad and Tobago</li>
+                            <li>Tunisia</li>
+                            <li>Turkey</li>
+                            <li>Turkmenistan</li>
+                            <li>Tuvalu</li>
+                            <li>Uganda</li>
+                            <li>Ukraine</li>
+                            <li>United Arab Emirates</li>
+                            <li>United Kingdom</li>
+                            <li>United States of America</li>
+                            <li>United States Virgin Islands</li>
+                            <li>Uruguay</li>
+                            <li>Uzbekistan</li>
+                            <li>Vanuatu</li>
+                            <li>Venezuela</li>
+                            <li>Vietnam</li>
+                            <li>Wales</li>
+                            <li>Yemen</li>
+                            <li>Zambia</li>
+                            <li>Zimbabwe</li>
+                        </ul>
+                    </div>
+                    <div id="piechart"></div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
     <script src="..\static\dashboard\geo.js"></script>
     <script src="..\static\dashboard\bar.js"></script>
     <script src="..\static\dashboard\parallel_plot.js"></script>
-
+    <script src="..\static\dashboard\pie_chart.js"></script>
+    
+    
 </body>
 </html>

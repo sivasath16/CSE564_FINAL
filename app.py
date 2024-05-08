@@ -12,7 +12,7 @@ CORS(app)  # Enable CORS for all routes
 cancer_data = pd.read_csv('./static/dataset/dataset.csv')
 cancer_data = cancer_data.sample(frac=0.002, random_state=42)
 pcp_df = cancer_data.copy()
-exclude1 = ['Entity', 'Code']
+exclude1 = ['Entity', 'Code', '15-49 years', '5-14 years', '50-69 years', '70+ years', 'Under 5']
 pcp_df.drop(exclude1, inplace=True, axis=1)
 numerical_columns = cancer_data.select_dtypes(include=[np.number])
 exclude = ["Year", "m49_code"]
@@ -24,16 +24,9 @@ pcpCols = col_names.copy()
 def index():
     return render_template('dashboard.html')
 
-# @app.route('/cancer_data', methods=['GET'])
-# def get_cancer_data():
-#     # Convert the DataFrame to a JSON object
-#     cancer_data_json = cancer_data.to_json(orient='records')
-#     return jsonify(cancer_data_json)
-
-
 @app.route('/pcp', methods=['GET'])
 def pcp():
-    num_clusters1 = 8
+    num_clusters1 = 4
     
     print(num_clusters1)
 

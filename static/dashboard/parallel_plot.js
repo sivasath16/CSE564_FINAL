@@ -10,7 +10,7 @@ const columnTypes = {
     'Age: Under 5': 'numerical',
     'DALYs cancer Std Rate': 'numerical',
     'types of cancer': 'categorical',
-    'number of ppl with cancer': 'numerical',
+    'cancer population': 'numerical',
     'death rates': 'numerical'
 };
 
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const colorScale = d3.schemeCategory10;
         const myScheme = [];
     
-        var margin = { top: 40, right: 2, bottom: 10, left: 5 },
-            width = 1100 - margin.left - margin.right,
+        var margin = { top: 40, right: 2, bottom: 10, left: 0 },
+            width = 1000 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
         
         var dimensions = col_names
@@ -126,7 +126,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("text-anchor", "start")
             .attr("fill", "black")
             .text(d => d))
-            .style("font-size", "8px")
+            .style("font-size", "12px")
+            .style("font-weight", "Bold");
             
         function brush(event) {
             var actives = [];
@@ -181,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .selectAll("rect")
             .attr("x", -8)
-            .attr("width", 16);
+            .attr("width", 16)
     
     
             

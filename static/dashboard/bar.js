@@ -34,13 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function drawBarChartVertical(data, selectedColumn) {
       const margin = {top: 10, right: 30, bottom: 120, left: 100},
-          width = 460 - margin.left - margin.right,
+          width = 700 - margin.left - margin.right,
           height = 400 - margin.top - margin.bottom;
 
       const svgContainer = d3.select('#bar');
       svgContainer.selectAll('*').remove();
 
-      const frequencyMap = d3.rollup(data, v => d3.sum(v, d => +d['number of ppl with cancer']), d => d[selectedColumn]);
+      const frequencyMap = d3.rollup(data, v => d3.sum(v, d => +d['cancer population']), d => d[selectedColumn]);
       const frequencyArray = Array.from(frequencyMap, ([key, value]) => ({ key, value }));
       frequencyArray.sort((a, b) => d3.descending(a.value, b.value));
 

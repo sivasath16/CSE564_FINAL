@@ -1,21 +1,55 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const margin = {top: 5, right: 30, bottom: 120, left: 100},
-        width = 1000 - margin.left - margin.right,
-        height = 550 - margin.top - margin.bottom;
+    const dropdowns = document.querySelectorAll('.dropdown1');
+    dropdowns.forEach(dropdown => {
+        const select = dropdown.querySelector('.select1');
+        const caret = dropdown.querySelector('.caret1');
+        const menu = dropdown.querySelector('.menu1');
+        const options = dropdown.querySelectorAll('.menu1 li');
+        const selected = dropdown.querySelector('.selected1');
 
-    const svg = d3.select("#geomap")
+        select.addEventListener('click', () => {
+            select.classList.toggle('select-clicked1');
+            caret.classList.toggle('caret-rotate1');
+            menu.classList.toggle('menu-open1');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                selected.innerText = option.innerText;
+                selected.classList.add("text-fade-in1");
+                setTimeout(() => {
+                    selected.classList.remove("text-fade-in1");
+                }, 300);
+
+                select.classList.remove('select-clicked1');
+                caret.classList.remove('caret-rotate1');
+                menu.classList.remove('menu-open1');
+                options.forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+
+                updateMap(document.getElementById("yearSlider").value, option.innerText.trim());
+            });
+        });
+    });
+
+    const margin = {top: 5, right: 30, bottom: 5, left: 20},
+        width = 650 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    const svgContainer = d3.select("#geomap")
         .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .style("background-color", "white");
+
+    const svg = svgContainer.append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
     const projection = d3.geoNaturalEarth1()
         .scale(140)
         .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);
-
-    const colorScale = d3.scaleSequential((t) => d3.interpolateReds(t * 1))
-        .domain([0, 10]);
 
     let tooltip1 = d3.select("body").append("div")
         .attr("class", "tooltip1")
@@ -28,75 +62,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let countries, countryDataMap;
 
-    function updateMap(year) {
-        countries.forEach(country => {
-            const countryYearKey = `${country.properties.name}_${year}`;
-            const deathRate = countryDataMap.get(countryYearKey);
-
-            country.properties.deathRate = deathRate; 
+    const zoom = d3.zoom()
+        .scaleExtent([1, 8])
+        .on("zoom", (event) => {
+            svg.attr("transform", event.transform);
+            svg.selectAll(".country")
+                .style("stroke-width", 0.5 / event.transform.k);
         });
+
+    svgContainer.call(zoom);
+
+    function updateMap(year, metric) {
+        const metricKey = metric === "Neoplasm Rates" ? "neoplasm_rates" : "death_rates";
+        const colorScale = d3.scaleSequential((t) => metric === "Neoplasm Rates" ? d3.interpolateBlues(t) : d3.interpolateReds(t))
+            .domain([0, 10]);
 
         svg.selectAll(".country")
             .data(countries)
+            .join("path")
+            .attr("class", "country")
+            .attr("d", pathGenerator)
             .attr("fill", d => {
-                const deathRate = d.properties.deathRate;
-                return deathRate !== undefined ? colorScale(deathRate) : "#eee"; // Default color for missing data
+                const countryYearKey = `${d.properties.name}_${year}_${metricKey}`;
+                const rate = countryDataMap.get(countryYearKey);
+                d.properties.rate = rate;
+                return rate !== undefined ? colorScale(rate) : "#eee";
+            })
+            .style("stroke", "#000")
+            .style("stroke-width", 0.5)
+            .on("mouseover", function (event, d) {
+                tooltip1.style("opacity", 1)
+                    .html(`Country: ${d.properties.name}<br>${metric}: ${d.properties.rate ? d.properties.rate.toFixed(2) + '%' : 'No data'}`)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function () {
+                tooltip1.style("opacity", 0);
             });
     }
 
-    d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json").then(worldData => {
-        d3.csv("/static/dataset/dataset.csv").then(csvData => {
-            const aggregatedData = d3.rollup(
-                csvData,
-                rows => d3.mean(rows, d => +d["death rates"]), 
-                d => d.Entity, 
-                d => d.Year    
-            );
+    Promise.all([
+        d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json"),
+        d3.csv("/static/dataset/dataset.csv")
+    ]).then(([worldData, csvData]) => {
+        const aggregatedData = d3.rollup(
+            csvData,
+            rows => d3.mean(rows, d => +d["death rates"]),
+            d => d.Entity, 
+            d => d.Year
+        );
 
-            countryDataMap = new Map();
-            aggregatedData.forEach((yearMap, country) => {
-                yearMap.forEach((value, year) => {
-                    countryDataMap.set(`${country}_${year}`, value);
-                });
+        countryDataMap = new Map();
+        aggregatedData.forEach((yearMap, country) => {
+            yearMap.forEach((value, year) => {
+                countryDataMap.set(`${country}_${year}_death_rates`, value);
             });
+        });
+        csvData.forEach(row => {
+            countryDataMap.set(`${row.Entity}_${row.Year}_neoplasm_rates`, +row["Neoplasm rate"]);
+        });
 
-            countries = topojson.feature(worldData, worldData.objects.countries).features;
-            countries = countries.filter(country => country.properties.name !== "Antarctica");
+        countries = topojson.feature(worldData, worldData.objects.countries).features;
+        countries = countries.filter(country => country.properties.name !== "Antarctica");
 
-            svg.selectAll(".country")
-                .data(countries)
-                .enter().append("path")
-                .attr("class", "country")
-                .attr("d", pathGenerator)
-                .style("stroke", "#000")
-                .style("stroke-width", 0.5)
-                .on("mouseover", function (event, d) {
-                    const deathRate = d.properties.deathRate;
-                    tooltip1.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    tooltip1.html(`Country: ${d.properties.name || "Unknown"}<br/>Death Rate: ${deathRate !== undefined ? deathRate.toFixed(2) + '%' : "No data"}`)
-                        .style("left", (event.pageX - 50) + "px")
-                        .style("top", (event.pageY - 70) + "px");
-                })
-                .on("mouseout", function () {
-                    tooltip1.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                });
-            const initialYear = document.getElementById("yearSlider").value;
-            updateMap(initialYear);
-
-            document.getElementById("yearSlider").addEventListener("input", function () {
-                const selectedYear = +this.value;
-                updateMap(selectedYear);
-                document.getElementById("sliderValue").textContent = selectedYear;
-            });
-
-        }).catch(error => {
-            console.error("Error loading CSV data:", error);
+        const initialYear = document.getElementById("yearSlider").value;
+        updateMap(initialYear, "Death Rates");
+        document.getElementById("yearSlider").addEventListener("input", function () {
+            const selectedYear = +this.value;
+            updateMap(selectedYear, document.querySelector('.selected1').innerText.trim());
+            document.getElementById("sliderValue").textContent = selectedYear;
         });
     }).catch(error => {
-        console.error("Error loading world data:", error);
+        console.error("Error loading data:", error);
     });
 });
