@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .style('border-radius', '4px')
       .style('color', '#fff');
 
-  let staticColor = '#69b3a2';
+  let staticColor = 'steelblue';
   let hoverColor = '#eec42d';
 
   d3.csv("/static/dataset/dataset.csv").then(function (data) {
@@ -85,13 +85,13 @@ document.addEventListener('DOMContentLoaded', function () {
               tooltip.style('visibility', 'hidden');
               d3.select(this).attr('fill', staticColor);
           });
-
       svg.append("g")
           .attr("transform", `translate(0, ${height})`)
           .call(d3.axisBottom(xscale))
           .selectAll("text")
           .attr("transform", "rotate(-45)")
-          .style("text-anchor", "end");
+          .style("text-anchor", "end")
+          .style("font-weight", "bold")
 
       svg.append("g")
           .call(d3.axisLeft(yscale));

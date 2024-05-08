@@ -1,63 +1,64 @@
 document.addEventListener('DOMContentLoaded', function () {
     const dropdowns = document.querySelectorAll('.dropdown');
-    dropdowns.forEach (dropdown => {
-    const select = dropdown.querySelector('.select');
-    const caret = dropdown.querySelector('.caret');
-    const menu = dropdown.querySelector('.menu');
-    const options = dropdown.querySelectorAll('.menu li');
-    const selected = dropdown.querySelector('.selected');
+    let selectionSource = 'dropdown'; // Default source
 
-    select.addEventListener('click', () => {
-        select.classList.toggle('select-clicked');
-        caret.classList.toggle('caret-rotate');
-        menu.classList.toggle('menu-open');
-    });
+    dropdowns.forEach(dropdown => {
+        const select = dropdown.querySelector('.select');
+        const caret = dropdown.querySelector('.caret');
+        const menu = dropdown.querySelector('.menu');
+        const options = dropdown.querySelectorAll('.menu li');
+        const selected = dropdown.querySelector('.selected');
 
-    options.forEach(option => {
-        option.addEventListener('click', () => {
-        selected.innerText = option.innerText;
-
-        selected.classList.add("text-fade-in");
-
-        setTimeout(() => {
-            selected.classList.remove("text-fade-in");
-        }, 300);
-
-        select.classList.remove('select-clicked');
-
-        caret.classList.remove('caret-rotate');
-
-        menu.classList.remove('menu-open');
+        select.addEventListener('click', () => {
+            select.classList.toggle('select-clicked');
+            caret.classList.toggle('caret-rotate');
+            menu.classList.toggle('menu-open');
+        });
 
         options.forEach(option => {
-            option.classList.remove('active')
+            option.addEventListener('click', () => {
+                selected.innerText = option.innerText;
+                selected.classList.add("text-fade-in");
+                setTimeout(() => {
+                    selected.classList.remove("text-fade-in");
+                }, 300);
+
+                select.classList.remove('select-clicked');
+                caret.classList.remove('caret-rotate');
+                menu.classList.remove('menu-open');
+
+                options.forEach(option => {
+                    option.classList.remove('active');
+                });
+
+                option.classList.add('active');
+                selectedCountry = selected.innerText;
+                selectionSource = 'dropdown'; // Update selection source
+                updateChart(selectedCountry);
+            });
         });
 
-        option.classList.add('active');
-        selectedColumn = selected.innerText;
-
-        updateChart(selectedColumn);
+        window.addEventListener("click", e => {
+            const size = dropdown.getBoundingClientRect();
+            if(e.clientX < size.left || e.clientX > size.right || e.clientY < size.top || e.clientY > size.bottom) {
+                select.classList.remove('select-clicked');
+                caret.classList.remove('caret-rotate');
+                menu.classList.remove('menu-open');
+            }
         });
     });
-
-
-    window.addEventListener("click", e => {
-    const size = dropdown.getBoundingClientRect();
-    if(e.clientX < size.left || e.clientX > size.right || e.clientY < size.top || e.clientY > size.bottom) {
-        select.classList.remove('select-clicked');
-        caret.classList.remove('caret-rotate');
-        menu.classList.remove('menu-open');
-        }
-    });
-
-    });
-
 
     let selectedCountry = "Afghanistan";
     let selectedYear = 1990;
     document.getElementById("yearSlider").addEventListener("input", function () {
         selectedYear = +this.value;
         document.getElementById("sliderValue").innerText = selectedYear;
+        updateChart(selectedCountry);
+    });
+
+    document.addEventListener('countrySelected', function (e) {
+        selectedCountry = e.detail.countryName;
+        selectionSource = 'file';
         updateChart(selectedCountry);
     });
 
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .style('text-align', 'center')
             .style('font-family', 'sans-serif')
             .style('font-size', '12px')
-            .style('pointer-events', 'none'); // Ensure tooltip doesn't interfere with mouse events
+            .style('pointer-events', 'none');
     
         d3.csv('/static/dataset/dataset.csv').then((data) => {
             let filteredData = data.find(row => row["Entity"] === selectedCountry && +row["Year"] === selectedYear);
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
             const pie = d3.pie().value(d => d.value);
             const arc = d3.arc().innerRadius(10).outerRadius(120);
+            const arcHover = d3.arc().innerRadius(10).outerRadius(140);
     
             d3.select("#piechart").selectAll("*").remove();
             const svg = d3.select("#piechart").append("svg")
@@ -114,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("d", arc)
                 .attr("fill", (d, i) => color(i))
                 .on("mouseover", function(e, d) {
+                    d3.select(this).transition()
+                        .duration(200)
+                        .attr("d", arcHover);
                     tooltip2.style("visibility", "visible");
                 })
                 .on("mousemove", function(e, d) {
@@ -122,6 +127,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         .style("top", `${e.pageY - 28}px`);
                 })
                 .on("mouseout", function(d) {
+                    d3.select(this).transition()
+                        .duration(200)
+                        .attr("d", arc);
                     tooltip2.style("visibility", "hidden");
                 });
             const legend = svg.append("g")
@@ -147,9 +155,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 .style("font-size", "17px")
                 .attr("text-anchor", "start")
                 .style("alignment-baseline", "middle");
-        });
+            
+            
+            const text = svg.append("g")
+            text.append("text")
+                .attr("y", 160)
+                .attr("x", 0)
+                .style("text-anchor", "middle")
+                .text(`Seleceted Country: ${selectedCountry}`);
+
+            });
+
     }
 
+    
     updateChart(selectedCountry);
-
 });

@@ -196,34 +196,45 @@ document.addEventListener('DOMContentLoaded', function () {
             return v == null ? x(d) : v;
         }
     
-        axes.selectAll("text.axis-text")
-        .call(d3.drag()
-            .subject(function(event, d) { return { x: x(d) }; })
-            .on("start", function(event, d) {
-                dragging[d] = x(d);
-        })
-        .on("drag", function(event, d) {
-            dragging[d] = Math.min(width - margin.right - margin.left, Math.max(0, event.x));
-            dimensions.sort(function(a, b) { return position(a) - position(b); });
-            x.domain(dimensions);
-            axes.attr("transform", function(d) { return "translate(" + position(d) + ")"; });
-            svg.selectAll(".data-line")
-                .attr("d", d => d3.line()
-                    .defined(([, value]) => value != null)  
-                    .x(([key]) => x(key))
-                    .y(([key, value]) => isCategorical(key) ? y[key](value) + y[key].bandwidth() / 2 : y[key](value))
-                    (d3.cross(dimensions, [d], (key, d) => [key, d[key]])));
-        })
-        .on("end", function(event, d) {
-            delete dragging[d];
-            transition(d3.select(this.parentNode)).attr("transform", "translate(" + x(d) + ")");
-            svg.selectAll(".data-line")
-                .attr("d", d => d3.line()
-                    .defined(([, value]) => value != null)  
-                    .x(([key]) => x(key))
-                    .y(([key, value]) => isCategorical(key) ? y[key](value) + y[key].bandwidth() / 2 : y[key](value))
-                    (d3.cross(dimensions, [d], (key, d) => [key, d[key]])));
-        }));
-    
+            axes.selectAll("text.axis-text")
+            .call(d3.drag()
+                .subject(function(event, d) { return { x: x(d) }; })
+                .on("start", function(event, d) {
+                    dragging[d] = x(d);
+            })
+            .on("drag", function(event, d) {
+                dragging[d] = Math.min(width - margin.right - margin.left, Math.max(0, event.x));
+                dimensions.sort(function(a, b) { return position(a) - position(b); });
+                x.domain(dimensions);
+                axes.attr("transform", function(d) { return "translate(" + position(d) + ")"; });
+                svg.selectAll(".data-line")
+                    .attr("d", d => d3.line()
+                        .defined(([, value]) => value != null)
+                        .x(([key]) => x(key))
+                        .y(([key, value]) => isCategorical(key) ? y[key](value) + y[key].bandwidth() / 2 : y[key](value))
+                        (d3.cross(dimensions, [d], (key, d) => [key, d[key]])));
+            
+                // Update brush position
+                svg.selectAll(".brush")
+                    .each(function(d) {
+                        d3.select(this).call(y[d].brush = d3.brushY()
+                            .extent([[-10, 0], [10, height]])
+                            .on("start", brush)
+                            .on("brush", brush)
+                            .on("end", brush));
+                    });
+            })
+            
+            .on("end", function(event, d) {
+                delete dragging[d];
+                transition(d3.select(this.parentNode)).attr("transform", "translate(" + x(d) + ")");
+                svg.selectAll(".data-line")
+                    .attr("d", d => d3.line()
+                        .defined(([, value]) => value != null)  
+                        .x(([key]) => x(key))
+                        .y(([key, value]) => isCategorical(key) ? y[key](value) + y[key].bandwidth() / 2 : y[key](value))
+                        (d3.cross(dimensions, [d], (key, d) => [key, d[key]])));
+            }));
+        
     }
 });

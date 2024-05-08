@@ -3,6 +3,7 @@
 h1 {
     font-weight: 400;
     font-size: 1.5rem;
+    color: white;
 }
 h2{
     font-weight: 400;
@@ -31,7 +32,12 @@ body {
     min-height: 100vh;
     width: 100%;
     transition: all 0.35s ease-in-out;
-    background-color: #fafbfe;
+    background-image: url('/static/background.jpg'); /* Adjust the path as necessary */
+    background-size: cover; /* Cover the full area of the div */
+    background-position: center; /* Center the image in the div */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    text-align: center; /* Center align the text */
+    padding: 20px;
 }
 
 
@@ -319,3 +325,15 @@ body {
     border: 1px #ffffff solid;
     height: 5em;
   }
+
+  #resetMapButton {
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+#resetMapButton:hover {
+    background-color: #e0e0e0;
+}

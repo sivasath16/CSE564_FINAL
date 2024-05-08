@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    let country = "Afghanistan"
+
     const margin = {top: 5, right: 30, bottom: 5, left: 20},
         width = 650 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
@@ -72,34 +74,52 @@ document.addEventListener('DOMContentLoaded', function () {
 
     svgContainer.call(zoom);
 
-    function updateMap(year, metric) {
-        const metricKey = metric === "Neoplasm Rates" ? "neoplasm_rates" : "death_rates";
-        const colorScale = d3.scaleSequential((t) => metric === "Neoplasm Rates" ? d3.interpolateBlues(t) : d3.interpolateReds(t))
-            .domain([0, 10]);
+    // let lastSelectedCountry = null;
 
-        svg.selectAll(".country")
-            .data(countries)
-            .join("path")
-            .attr("class", "country")
-            .attr("d", pathGenerator)
-            .attr("fill", d => {
-                const countryYearKey = `${d.properties.name}_${year}_${metricKey}`;
-                const rate = countryDataMap.get(countryYearKey);
-                d.properties.rate = rate;
-                return rate !== undefined ? colorScale(rate) : "#eee";
-            })
-            .style("stroke", "#000")
-            .style("stroke-width", 0.5)
-            .on("mouseover", function (event, d) {
-                tooltip1.style("opacity", 1)
-                    .html(`Country: ${d.properties.name}<br>${metric}: ${d.properties.rate ? d.properties.rate.toFixed(2) + '%' : 'No data'}`)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", function () {
-                tooltip1.style("opacity", 0);
+
+function updateMap(year, metric) {
+    const metricKey = metric === "Neoplasm Rates" ? "neoplasm_rates" : "death_rates";
+    const colorScale = d3.scaleSequential((t) => metric === "Neoplasm Rates" ? d3.interpolateBlues(t) : d3.interpolateReds(t))
+        .domain([0, 10]);
+
+    const countriesSelection = svg.selectAll(".country")
+        .data(countries)
+        .join("path")
+        .attr("class", "country")
+        .attr("d", pathGenerator)
+        .attr("fill", d => {
+            const countryYearKey = `${d.properties.name}_${year}_${metricKey}`;
+            const rate = countryDataMap.get(countryYearKey);
+            d.properties.rate = rate;
+            return rate !== undefined ? colorScale(rate) : "#eee";
+        })
+        .style("stroke", "#000")
+        .style("stroke-width", 0.5)
+        .style("opacity", 1) // Reset opacity to full on update
+        .on("mouseover", function (event, d) {
+            tooltip1.style("opacity", 1)
+                .html(`Country: ${d.properties.name}<br>${metric}: ${d.properties.rate ? d.properties.rate.toFixed(2) + '%' : 'No data'}`)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function () {
+            tooltip1.style("opacity", 0);
+        })
+        .on("click", (event, d) => {
+            // Reduce the opacity of all countries
+            countriesSelection.style("opacity", 0.5);
+            // Highlight the selected country by setting its opacity to full
+            d3.select(event.currentTarget).style("opacity", 1);
+
+            // Dispatch a custom event with the country name
+            const countryEvent = new CustomEvent("countrySelected", {
+                detail: {
+                    countryName: d.properties.name
+                }
             });
-    }
+            document.dispatchEvent(countryEvent);
+        });
+}
 
     Promise.all([
         d3.json("https://unpkg.com/world-atlas@2.0.2/countries-50m.json"),
@@ -131,6 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const selectedYear = +this.value;
             updateMap(selectedYear, document.querySelector('.selected1').innerText.trim());
             document.getElementById("sliderValue").textContent = selectedYear;
+        });
+        document.getElementById('resetMapButton').addEventListener('click', function() {
+            // Reset the opacity of all country paths to full
+            svg.selectAll(".country").style("opacity", 1);
         });
     }).catch(error => {
         console.error("Error loading data:", error);

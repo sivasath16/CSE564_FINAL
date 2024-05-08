@@ -3,6 +3,9 @@ from flask_cors import CORS  # Import the CORS extension
 import pandas as pd
 from sklearn.cluster import KMeans
 import numpy as np
+from sklearn.preprocessing import PowerTransformer, StandardScaler
+from sklearn.manifold import MDS
+from sklearn.metrics import pairwise_distances
 
 
 app = Flask(__name__)
@@ -42,6 +45,40 @@ def pcp():
         'col_names': pcpCols,
         'cluster_labels': cluster_labels.tolist()
     }
+    return jsonify(data)
+
+@app.route('/mds', methods=['GET', 'POST'])
+def mds():
+    num_clusters2 = 4
+    
+
+    scaler = StandardScaler()
+    X_s = scaler.fit_transform(numerical_columns)
+    power_transformer = PowerTransformer(method='yeo-johnson')
+    X_s = power_transformer.fit_transform(X_s)
+
+    mds_data = MDS(n_components=2, dissimilarity='euclidean', random_state=69)
+    mds_data_transformed = mds_data.fit_transform(X_s)
+
+    
+    correlation_distances = np.corrcoef(X_s.T)
+    correlation_distances = 1 - correlation_distances
+    variables_mds = MDS(n_components=2, dissimilarity='precomputed',random_state=69)
+    variables_mds_transformed = variables_mds.fit_transform(correlation_distances)
+
+    
+    kmeans = KMeans(n_clusters=num_clusters2, random_state=42)
+    kmeans.fit(mds_data_transformed)
+    cluster_labels = kmeans.labels_
+    
+    data = {
+        'X_pca': mds_data_transformed.tolist(),
+        'X_pca1':variables_mds_transformed.tolist(),
+        'cluster_labels': cluster_labels.tolist(),
+        'feature_names': numerical_columns.columns.tolist(),
+        'num_clusters': num_clusters2
+    }
+
     return jsonify(data)
 
 if __name__ == '__main__':
