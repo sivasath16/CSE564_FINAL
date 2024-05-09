@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .attr("width", 600)
                 .attr("height", 400)
                 .append("g")
-                .attr("transform", "translate(200, 150)");
+                .attr("transform", "translate(200, 200)");
     
             const arcs = svg.selectAll("arc")
                 .data(pie(ageGroups))
